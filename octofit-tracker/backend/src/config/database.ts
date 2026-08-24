@@ -1,7 +1,9 @@
 import mongoose from 'mongoose';
 
 const connectionString = process.env.MONGODB_URI || 'mongodb://localhost:27017/octofit_db';
-const db = mongoose.connection;
+const db = mongoose.connection as typeof mongoose.connection & {
+  on(event: string, listener: (...args: unknown[]) => void): void;
+};
 
 mongoose
   .connect(connectionString)
