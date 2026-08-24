@@ -13,7 +13,12 @@ function Activities() {
 }
 
 function CollectionPage({ title, subtitle, items, error, columns }) {
-  return <section className="page-section"><div className="page-heading"><div><p className="eyebrow">OCTOFIT TRACKER</p><h1>{title}</h1><p>{subtitle}</p></div><span className="item-count">{items.length} records</span></div>{error && <div className="alert alert-warning">{error}</div>}<div className="data-panel"><div className="table-responsive"><table className="table align-middle"><thead><tr>{columns.map((column) => <th key={column}>{column}</th>)}</tr></thead><tbody>{items.length ? items.map((item, index) => <tr key={item._id || item.id || index}>{columns.map((column) => <td key={column}>{String(item[column] ?? item.userName ?? item.name ?? '-')}</td>)}</tr>) : <tr><td colSpan={columns.length} className="empty-state">No records available.</td></tr>}</tbody></table></div></div></section>
+  const valueFor = (item, column) => {
+    const aliases = { user: ['username', 'userName', 'user'], duration: ['durationMinutes', 'duration'], date: ['completedAt', 'date'] }
+    const value = [column, ...(aliases[column] || [])].map((key) => item[key]).find((entry) => entry !== undefined && entry !== null)
+    return value ?? item.name ?? '-'
+  }
+  return <section className="page-section"><div className="page-heading"><div><p className="eyebrow">OCTOFIT TRACKER</p><h1>{title}</h1><p>{subtitle}</p></div><span className="item-count">{items.length} records</span></div>{error && <div className="alert alert-warning">{error}</div>}<div className="data-panel"><div className="table-responsive"><table className="table align-middle"><thead><tr>{columns.map((column) => <th key={column}>{column}</th>)}</tr></thead><tbody>{items.length ? items.map((item, index) => <tr key={item._id || item.id || index}>{columns.map((column) => <td key={column}>{String(valueFor(item, column))}</td>)}</tr>) : <tr><td colSpan={columns.length} className="empty-state">No records available.</td></tr>}</tbody></table></div></div></section>
 }
 
 export default Activities
